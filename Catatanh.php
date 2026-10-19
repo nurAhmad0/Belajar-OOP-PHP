@@ -1,0 +1,2 @@
+<?php
+// dokumentasi oop :https://www.w3schools.com/php/php_oop_classes_objects.asp
