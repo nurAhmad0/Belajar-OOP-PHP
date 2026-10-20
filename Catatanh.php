@@ -323,15 +323,115 @@ echo "4. Program mencapai baris paling akhir (Skrip Selesai).<br>";
 // >================================================<output>================================================
 
 
-1. Program mulai berjalan.
-Objek 'Database-Utama' berhasil dibuat dan memakan memori.
-2. Melakukan beberapa pekerjaan dengan Database-Utama...
---> Objek 'Database-Utama' dihancurkan oleh unset(), memori dibersihkan.
 
-3. Program masih lanjut berjalan jauh di bawah...
-Objek 'Database-Kedua' berhasil dibuat dan memakan memori.
-4. Program mencapai baris paling akhir (Skrip Selesai).
---> Objek 'Database-Kedua' dihancurkan oleh unset(), memori dibersihkan.</output>
+class KoneksiSistem {
+    private $nama;
+
+    public function __construct($nama) {
+        $this->nama = $nama;
+        echo "Objek '{$this->nama}' berhasil dibuat dan memakan memori.<br>";
+    }
+
+    // Destructor akan otomatis terpanggil saat objek dihapus
+    public function __destruct() {
+        echo "--> Objek '{$this->nama}' dihancurkan oleh unset(), memori dibersihkan.<br><br>";
+    }
+}
+
+// --- EKSEKUSI PROGRAM ---
+
+echo "1. Program mulai berjalan.<br>";
+$db1 = new KoneksiSistem("Database-Utama");
+
+echo "2. Melakukan beberapa pekerjaan dengan Database-Utama...<br>";
+
+// KONDISI: Tugas database pertama sudah selesai di sini. 
+// Padahal skrip PHP di bawah masih panjang. Kita sengaja pakai unset():
+unset($db1); 
+
+echo "3. Program masih lanjut berjalan jauh di bawah...<br>";
+$db2 = new KoneksiSistem("Database-Kedua");
+
+echo "4. Program mencapai baris paling akhir (Skrip Selesai).<br>";
+
+
+// 1. Program mulai berjalan.
+// Objek 'Database-Utama' berhasil dibuat dan memakan memori.
+// 2. Melakukan beberapa pekerjaan dengan Database-Utama...
+// --> Objek 'Database-Utama' dihancurkan oleh unset(), memori dibersihkan.
+
+// 3. Program masih lanjut berjalan jauh di bawah...
+// Objek 'Database-Kedua' berhasil dibuat dan memakan memori.
+// 4. Program mencapai baris paling akhir (Skrip Selesai).
+// --> Objek 'Database-Kedua' dihancurkan oleh unset(), memori dibersihkan.</output>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ========================================pengguanaan get dan set ==============================================================
+class RekeningBank {
+    // Properti dibuat private agar aman dan tidak bisa diubah langsung dari luar
+    private $namaPemilik;
+    private $saldo;
+
+    // 1. Constructor untuk memasukkan data awal saat objek pertama kali dibuat
+    public function __construct($namaPemilik, $saldoAwal) {
+        $this->namaPemilik = $namaPemilik;
+        $this->saldo = $saldoAwal;
+    }
+
+    // ==========================================
+    // GETTER: Untuk membaca data private
+    // ==========================================
+    public function getNamaPemilik() {
+        return $this->namaPemilik;
+    }
+
+    public function getSaldo() {
+        return $this->saldo;
+    }
+
+    // ==========================================
+    // SETTER: Untuk mengubah/memanipulasi data private
+    // ==========================================
+    public function setSetorUang($jumlah) {
+        // Keuntungan profesional: Kita bisa menyisipkan validasi di sini!
+        if ($jumlah > 0) {
+            $this->saldo += $jumlah;
+            echo "Berhasil setor Rp{$jumlah}. Saldo sekarang: {$this->saldo}<br>";
+        } else {
+            echo "Jumlah setor tidak valid!<br>";
+        }
+    }
+}
+
+// --- CARA MENGGUNAKANNYA DI LUAR CLASS ---
+
+$akun = new RekeningBank("Budi", 500000);
+
+// ❌ SALAH & AKAN ERROR (Karena properti private):
+// echo $akun->saldo; 
+// $akun->saldo = 1000000;
+
+// BENAR (Menggunakan Getter untuk membaca):
+echo "Pemilik: " . $akun->getNamaPemilik() . "<br>";
+echo "Saldo awal: " . $akun->getSaldo() . "<br>";
+
+// BENAR (Menggunakan Setter untuk mengubah data dengan aman):
+$akun->setSetorUang(200000);
 
 
 
