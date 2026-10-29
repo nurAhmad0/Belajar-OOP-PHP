@@ -231,6 +231,17 @@ $admin->info(); // Output: Ini adalah User khusus Admin dari folder Admin.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 // namespace untuk function dan const
 namespace App\Helper;
 
@@ -266,3 +277,120 @@ echo "Kecepatan cahaya: " . KECEPATAN_CAHAYA . " km/s<br>";
 
 // Memanggil fungsi
 echo "Luas persegi: " . hitungLuasPersegi(4) . "<br>";
+
+
+
+
+
+
+// ini jika memanggil banyak function, class atau yang lain dalam satu namespace
+use Data\One\{Conflict as Conflict1, Conflict as Conflict2};
+use function Helper\{helpMe as help};
+use const Helper\{APPLICATION as APP};
+
+$conflict1 = new Conflict1();
+$conflict2 = new Conflict2();
+
+help();
+echo APP . PHP_EOL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * =====================================================================
+ * KUMPULAN CATATAN: REQUIRE/INCLUDE, NAMESPACE, DAN USE KEYWORD
+ * =====================================================================
+ * Catatan ini merangkum perbedaan mendasar, fungsi, serta cara kerja 
+ * dari require/include, namespace, dan use, baik dalam PHP murni 
+ * maupun di dalam framework modern seperti Laravel.
+ */
+
+
+/*
+| =====================================================================
+| 1. REQUIRE / INCLUDE (Urusan Fisik File)
+| =====================================================================
+| - Kegunaan: Memerintahkan PHP untuk mengambil dan menyalin isi fisik 
+|   sebuah file .php ke dalam file yang sedang kita jalankan.
+| - Cara Kerja: Berdasarkan jalur direktori file fisik (path folder), 
+|   contoh: require 'app/Models/Buku.php';
+| - Sifat: Jika file fisik yang dituju tidak ada atau salah ketik path-nya, 
+|   PHP akan langsung memunculkan error fatal (Fatal Error) dan menghentikan program.
+| - Catatan Khusus di Laravel: Kita HAMPIR TIDAK PERNAH menulis require/include 
+|   secara manual. Urusan pencarian file fisik sudah otomatis diambil alih oleh 
+|   sistem "Composer Autoloader" menggunakan standar PSR-4.
+ */
+
+
+/*
+| =====================================================================
+| 2. NAMESPACE (Urusan Alamat Logis / Rumah Folder)
+| =====================================================================
+| - Kegunaan: Menjadi tanda pengenal "alamat rumah" atau wadah logis 
+|   dari sebuah file class di dalam proyek.
+| - Aturan: Nama namespace selalu mengikuti struktur folder tempat file itu disimpan.
+|   Contoh: File yang disimpan di folder `app/Models/Buku.php` wajib mendeklarasikan:
+|   -> namespace App\Models;
+| - Alasan Dibutuhkan: Mencegah tabrakan nama (name collision). Bayangkan jika 
+|   ada banyak class bernama "User" untuk Admin, Member, dan Kurir. Dengan namespace, 
+|   semuanya aman karena punya alamat unik masing-masing.
+ */
+
+
+/*
+| =====================================================================
+| 3. USE KEYWORD (Jembatan Alias / Panggilan Singkat)
+| =====================================================================
+| - Kegunaan: Berfungsi sebagai alat impor (import) atau memberikan nama 
+|   panggilan singkat (alias) untuk sebuah class, function, atau constant 
+|   yang berada di luar namespace file yang sedang kita buka.
+| - Cara Kerja: Bukan mencari file fisik, melainkan mendaftarkan kamus alias 
+|   di awal file agar kita tidak perlu menulis alamat namespace yang panjang 
+|   berulang-ulang.
+| - Contoh Penulisan:
+|   -> use App\Models\Buku;
+|   -> use Illuminate\Http\Request;
+|   -> use App\Admin\User as AdminUser; (Memberi alias jika ada nama class kembar)
+ */
+
+
+/*
+| =====================================================================
+| 4. ILUSTRASI PERBANDINGAN NYATA
+| =====================================================================
+| 
+| [A. GAYA PHP JADUL / TANPA NAMESPACE & USE]
+| - Harus melakukan require file fisik secara manual satu per satu.
+| - Rawan error fatal jika salah path, dan rentan konflik nama class yang sama.
+| 
+| [B. GAYA PHP MODERN / FRAMEWORK LARAVEL]
+| - Urusan file fisik: Diurus otomatis oleh Composer Autoloader di belakang layar.
+| - Urusan struktur: Setiap file wajib menulis `namespace [NamaFolder];` di baris atas.
+| - Urusan kemudahan: Menggunakan `use [AlamatClass];` agar kode bersih, elegan, 
+|   dan mudah dibaca tanpa harus menulis alamat panjang di setiap baris kodingan.
+ */
+
+// Selesai. Silakan simpan catatan ini di file .php pilihanmu!

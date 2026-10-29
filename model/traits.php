@@ -41,6 +41,48 @@ echo "<br>";
 
 $product = new Product();
 $product->updateStok();
+
+
+
+
+//perbedaan static method dengan traits
+//static method
+class Kalkulator {
+    // Dibuat static
+    public static function tambah($a, $b) {
+        // Static method TIDAK BISA pakai $this
+        return $a + $b; 
+    }
+}
+
+// Cara Memanggilnya (TIDAK PERLU pakai 'new')
+$hasil = Kalkulator::tambah(5, 10); 
+echo $hasil; // Output: 15
+
+
+
+
+
+
+
+//traits
+// 1. Buat Trait
+trait BisaTeriak {
+    public function teriak() {
+        // Trait BISA pakai $this karena nanti melekat pada objek
+        return "Halo, nama saya adalah " . $this->nama; 
+    }
+}
+
+// 2. Tempelkan ke Class
+class Orang {
+    use BisaTeriak; // Menyatu di sini
+    public $nama = "Budi";
+}
+
+// 3. Cara Memanggilnya (Wajib pakai 'new' karena pakai $this)
+$orang = new Orang();
+echo $orang->teriak(); // Output: Halo, nama saya adalah Budi
 ?>
 
 
