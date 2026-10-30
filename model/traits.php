@@ -1,5 +1,22 @@
 <?php
 
+// Kamu bisa menggunakan Trait jika memenuhi kondisi-kondisi berikut:
+
+// 1. Digunakan oleh banyak class berbeda yang tidak punya hubungan silsilah (inheritance).
+
+// 2. Fungsi/method tersebut sudah memiliki isi kode yang lengkap (bukan kontrak kosong seperti interface).
+
+// 3. Isi kode atau logikanya sama persis sehingga tidak perlu ditulis ulang di tiap class.
+
+// 4. Kode tersebut butuh mengakses $this atau mengelola properti/data milik objek yang memanggilnya.
+
+
+
+
+
+
+
+
 // 1. Membuat Trait
 trait Logger {
     public function catatLog($pesan) {
@@ -83,7 +100,155 @@ class Orang {
 // 3. Cara Memanggilnya (Wajib pakai 'new' karena pakai $this)
 $orang = new Orang();
 echo $orang->teriak(); // Output: Halo, nama saya adalah Budi
+
+
+
+
+
+
+
+
+// 1. Membuat Trait yang berisi fungsi siap pakai
+trait TimestampTrait {
+    public $dibuatPada;
+
+    public function setWaktuBuat() {
+        $this->dibuatPada = date('Y-m-d H:i:s');
+        return "Data dibuat pada: " . $this->dibuatPada;
+    }
+}
+
+// 2. Class Buku (Tidak ada hubungan keluarga dengan Transaksi)
+class Buku {
+    use TimestampTrait; // Menempelkan Trait
+    public $judul;
+}
+
+// 3. Class Transaksi (Sama sekali berbeda dengan Buku)
+class Transaksi {
+    use TimestampTrait; // Menempelkan Trait yang SAMA persis
+    public $totalHarga;
+}
+
+// --- CARA MENJALANKANNYA ---
+$bukuBaru = new Buku();
+echo $bukuBaru->setWaktuBuat(); // Berhasil! Padahal Buku bukan turunan TimestampTrait.
+
+$transaksiBaru = new Transaksi();
+echo $transaksiBaru->setWaktuBuat(); // Berhasil juga!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+trait CanRun
+{
+    public abstract function run(): void;//wajib di tulis ulang
+}
+
+class Person {
+    use CanRun;
+    
+    public function run(): void
+    {
+        echo "Person {$this->name} is running" . PHP_EOL;
+    }
+}
+
+
+
+// selain itu ada juga override oleh trait
+//urutan prioritas override
+//ParentClass = override by => Traits = override by => ChildClass
+
+
+
+
+// bisa juga mengubah visibilitas dari funstion dari traits
+// use SayGoodBye, SayHello, HasName, CanRun {
+//     hello as private; jadi ini itu mengubah yang awlanya sebuh function nama hello dengan visibilitas public diubah menjadi private
+//     goodBye as private;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==================================================jika functio sama tapi beda traits=========================================
+trait TraitA {
+    public function pesan() {
+        return "Pesan dari Trait A";
+    }
+}
+
+trait TraitB {
+    public function pesan() {
+        return "Pesan dari Trait B";
+    }
+}
+
+class Komunikasi {
+    use TraitA, TraitB; 
+    // ERROR! PHP bingung: mau pakai pesan() milik TraitA atau TraitB?
+}
+
+
+
+
+
+//versi yang bnar
+
+trait TraitA {
+    public function pesan() {
+        return "Pesan dari Trait A";
+    }
+}
+
+trait TraitB {
+    public function pesan() {
+        return "Pesan dari Trait B";
+    }
+}
+
+class Komunikasi {
+    use TraitA, TraitB {
+        // 1. Artinya: "Gunakan fungsi pesan() dari TraitB, abaikan yang dari TraitA"
+        TraitB::pesan insteadof TraitA;
+
+        // 2. Artinya: "Simpan juga fungsi pesan() milik TraitA, tapi ganti namanya jadi pesanA"
+        TraitA::pesan as pesanA;
+    }
+}
+
+// --- CARA MENJALANKANNYA ---
+$objek = new Komunikasi();
+
+echo $objek->pesan() . "<br>";   
+// Output: Pesan dari Trait B (karena dipilih menggunakan insteadof)
+
+echo $objek->pesanA(); 
+// Output: Pesan dari Trait A (karena diganti namanya jadi pesanA menggunakan 'as')
 ?>
+
 
 
 
