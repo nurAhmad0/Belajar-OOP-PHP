@@ -265,3 +265,143 @@ Budi berhasil masuk ke aplikasi.
 
 Stok produk Laptop Gaming diperbarui.
 [LOG SISTEM] 2026-10-20 10:57:00 - Stok produk diperbarui. -->
+
+
+
+
+
+
+
+
+
+
+<!-- =========================================ini outputnya========================================= -->
+/**
+ * =====================================================================
+ * PANDUAN LENGKAP & CATATAN: TRAIT INHERITANCE DI PHP
+ * =====================================================================
+ * 
+ * Topik Utama:
+ * 1. Apa itu Trait Inheritance (Trait composing Traits)?
+ * 2. Menggabungkan/Mewarisi Trait ke dalam Trait lain.
+ * 3. Aturan Prioritas / Override (Precedence Rules) di OOP PHP:
+ *    Parent Class vs Trait vs Subclass.
+ */
+
+namespace App\Panduan;
+
+// =====================================================================
+// 1. DUA TRAIT DASAR
+// =====================================================================
+
+trait Loggable {
+    public function log(string $pesan): string {
+        return "[LOG]: " . $pesan;
+    }
+}
+
+trait Authenticatable {
+    public function checkAuth(): string {
+        return "[AUTH]: User terverifikasi.";
+    }
+}
+
+
+// =====================================================================
+// 2. TRAIT INHERITANCE (Trait Mewarisi / Memakai Trait Lain)
+// =====================================================================
+/**
+ * KONSEP:
+ * Seperti halnya class yang bisa memakai trait, sebuah Trait JUGA BISA
+ * menggunakan Trait lain! Ini sering disebut "Trait Composition" atau 
+ * "Trait Inheritance".
+ */
+trait UserManagementTrait {
+    // Trait ini menyerap kemampuan dari Loggable dan Authenticatable
+    use Loggable, Authenticatable;
+
+    public function createUser(string $nama): string {
+        // Bisa mengakses method dari trait yang diserap ($this->log)
+        $statusLog = $this->log("Membuat user baru: " . $nama);
+        $statusAuth = $this->checkAuth();
+        
+        return $statusAuth . " | " . $statusLog;
+    }
+}
+
+
+// =====================================================================
+// 3. ATURAN PRIORITAS OVERRIDE (PRECEDENCE RULES)
+// =====================================================================
+/**
+ * ATURAN EMAS PRIORITAS METHOD DI PHP:
+ * 1. Method di Current Class (Subclass)  ==> PRIORITAS 1 (Paling Kuat / Menimpa Semua)
+ * 2. Method di Trait                    ==> PRIORITAS 2 (Menimpa Parent Class)
+ * 3. Method di Parent Class             ==> PRIORITAS 3 (Paling Lemah)
+ */
+
+// A. Class Induk (Parent)
+class BaseService {
+    public function getRole(): string {
+        return "Role dari Parent Class (BaseService)";
+    }
+}
+
+// B. Trait dengan Nama Method yang Sama
+trait RoleTrait {
+    public function getRole(): string {
+        return "Role dari Trait (RoleTrait)";
+    }
+}
+
+// C. Class Anak (Subclass) yang Menggabungkan Parent & Trait
+class UserService extends BaseService {
+    // Memakai Trait yang memiliki method getRole()
+    use RoleTrait;
+
+    // KETENTUAN:
+    // Jika method getRole() TIDAK didefinisikan di class ini,
+    // maka method milik RoleTrait yang akan menang dan MENIMPA milik BaseService.
+
+    // Jika kamu meng-uncomment fungsi di bawah ini, 
+    // maka method milik class ini yang akan MENANG menimpa Trait dan Parent:
+    
+    /*
+    public function getRole(): string {
+        return "Role dari Current Class (UserService)";
+    }
+    */
+}
+
+
+// =====================================================================
+// 4. PENGUJIAN / DEMO CODE
+// =====================================================================
+
+class AppManager {
+    // Memakai Trait hasil komposisi (UserManagementTrait)
+    use UserManagementTrait;
+}
+
+echo "=== 1. DEMO TRAIT INHERITANCE / COMPOSITION ===\n";
+$app = new AppManager();
+echo $app->createUser("Budi") . "\n\n";
+
+echo "=== 2. DEMO ATURAN PRIORITAS (PRECEDENCE) ===\n";
+$userSvc = new UserService();
+// Output ini akan membuktikan bahwa Method Trait MENIMPA Method Parent Class!
+echo $userSvc->getRole() . "\n";
+
+/**
+ * CATATAN RINGKASAN UNTUK DIINGAT:
+ * 
+ * 1. Trait Inherit/Compose:
+ *    - Trait A bisa `use Trait B, Trait C;` di dalam dirinya.
+ *    - Class yang memakai Trait A otomatis mendapatkan method milik B & C.
+ * 
+ * 2. Hierarki Override:
+ *    [ Current Class ] > [ Trait ] > [ Parent Class ]
+ *    - Method di Class sendiri menimpa Method Trait.
+ *    - Method di Trait menimpa Method dari Parent Class.
+ */
+
